@@ -36,11 +36,11 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
         env:
-        TF_VAR_environment: dev
+          TF_VAR_environment: dev
 
       # Step 6: Terraform Apply
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
-        TF_VAR_environment: dev
+          TF_VAR_environment: dev

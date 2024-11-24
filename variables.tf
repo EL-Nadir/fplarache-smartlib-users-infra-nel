@@ -5,22 +5,22 @@ variable "aws_region" {
 
 variable "ecr_repository_name" {
   description = "The name of the Elastic Container Registry (ECR) repository"
-  default     = "my-app-repo"
+  default     = "dev-fplarache-smartlib-users-repo-nadir"
 }
 
 variable "ecs_cluster_name" {
   description = "The name of the ECS cluster"
-  default     = "my-app-cluster"
+  default     = "dev-fplarache-smartlib-users-cluster-nadir"
 }
 
 variable "ecs_task_family" {
   description = "The family name of the ECS task definition"
-  default     = "my-app-task-family"
+  default     = "dev-fplarache-smartlib-users-td-nadir"
 }
 
 variable "ecs_service_name" {
   description = "The name of the ECS service"
-  default     = "my-app-service"
+  default     = "dev-fplarache-smartlib-users-service-nadir"
 }
 
 variable "subnet_ids" {

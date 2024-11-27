@@ -28,17 +28,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "eu-north-1"
 
-      # Step 4: Initialize Terraform
+      # Step 4: Terraform Init
       - name: Terraform Init
         run: terraform init
 
-      # Step 5: Terraform Plan
+      # Step 5: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 6: Terraform Plan
       - name: Terraform Plan
         run: terraform plan
         env:
           TF_VAR_environment: dev
 
-      # Step 6: Terraform Apply
+      # Step 7: Terraform Apply (on push to main)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve

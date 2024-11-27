@@ -2,39 +2,35 @@ provider "aws" {
   region = var.aws_region
 }
 
-
 # Create an ECR Repository
-
 resource "aws_ecr_repository" "users_repo_nadir" {
-  name                 = var.ecr_repo_name
-  image_tag_mutability = "MUTABLE" 
+  name                 = var.ecr_repository_name
+  image_tag_mutability = "MUTABLE"
 }
 
-
 # Create an ECS Cluster
-
 resource "aws_ecs_cluster" "users_cluster_nadir" {
   name = var.ecs_cluster_name
 }
 
 # Create an ECS Task Definition
 resource "aws_ecs_task_definition" "users_td_nadir" {
-  family                   = var.task_family
+  family                   = var.ecs_task_family
   container_definitions    = <<DEFINITION
   [
     {
       "name": "users_container_nadir",
-      "image": "${aws_ecr_repository.app_repo.repository_url}:latest",
-      "memory": 512,
-      "cpu": 256,
+      "image": "${aws_ecr_repository.users_repo_nadir.repository_url}:latest",
+      "memory": ${var.container_memory},
+      "cpu": ${var.container_cpu},
       "essential": true
     }
   ]
   DEFINITION
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  memory                   = "512"
-  cpu                      = "256"
+  memory                   = "${var.container_memory}"
+  cpu                      = "${var.container_cpu}"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 }
 
@@ -54,11 +50,9 @@ resource "aws_ecs_service" "users_service_nadir" {
   desired_count = 1
 }
 
-
 # Define an IAM Role for ECS
-
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs_task_Execution_Role_nadir"
+  name = "ecs_task_execution_role_nadir"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -74,10 +68,8 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
-# adding policy to the role
-
+# Attach Policy to IAM Role
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
-  name       = "ecs_task_execution_policy_attachment"
-  role       = aws_iam_role.ecs_task_execution.name
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
